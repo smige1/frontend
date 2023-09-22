@@ -1,71 +1,38 @@
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
-import axios from "axios";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Header from "./components/header/Header";
-import Home from "./pages/home/Home";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Footer from "./components/footer/Footer";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getLoginStatus,
-  getUser,
-  selectIsLoggedIn,
-  selectUser,
-} from "./redux/features/auth/authSlice";
-import { useEffect } from "react";
-import Profile from "./pages/profile/Profile";
-import AdminOnlyRoute from "./components/adminOnlyRoute/AdminOnlyRoute";
-import Admin from "./pages/admin/Admin";
-import NotFound from "./pages/404/NotFound";
-import Product from "./pages/product/Product";
-import ProductDetails from "./components/product/productDetails/ProductDetails";
-import Cart from "./pages/cart/Cart";
-import CheckoutDetails from "./pages/checkout/CheckoutDetails";
-import Checkout from "./pages/checkout/Checkout";
-import CheckoutSuccess from "./pages/checkout/CheckoutSuccess";
-import OrderHistory from "./pages/orderHistory/OrderHistory";
-import OrderDetails from "./pages/orderDetails/OrderDetails";
-import ReviewProducts from "./pages/reviewProducts/ReviewProducts";
-import CheckoutFlutterwave from "./pages/checkout/CheckoutFlutterwave";
-import CheckoutPaypal from "./pages/checkout/CheckoutPaypal";
-import CheckoutWallet from "./pages/checkout/CheckoutWallet";
-import Wallet from "./pages/wallet/Wallet";
-import Wishlist from "./pages/wishlist/Wishlist";
-import { AnimatePresence } from "framer-motion";
-
-axios.defaults.withCredentials = true;
-// Deploy
+// Pages
+import  Home from "./Pages/Home/Home";
+import  Admin  from "./Pages/Admin/Admin";
+import Contact from "./Pages/Contact/Contact";
+import Login from "./Pages/Authentication/Login"
+import Register from "./Pages/Authentication/Register"
+import Reset from "./Pages/Authentication/Reset"
+// Components
+import { Header, Footer } from "./Components";
+import AdminOnlyRoute from "./Components/AdminOnlyRoute/AdminOnlyRoute";
+import ProductDetails from "./Components/Products/ProductDetails/ProductDetails";
+import Cart from "./Pages/Cart/Cart";
+import CheckoutDetails from "./Pages/Checkout/CheckoutDetails";
+import Checkout from "./Pages/Checkout/Checkout";
+import CheckoutSuccess from "./Pages/Checkout/CheckoutSuccess";
+import OrderHistory from "./Pages/OrderHistory/OrderHistory";
+import OrderDetails from "./Pages/Orderdetails/OrderDetails";
+import ReviewProducts from "./Components/ReviewProduct/ReviewProduct";
+import NotFound from "./Pages/NotFound/NotFound";
 
 function App() {
-  const location = useLocation();
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectIsLoggedIn);
-  const user = useSelector(selectUser);
-
-  useEffect(() => {
-    dispatch(getLoginStatus());
-    // console.log("Get Login Status App");
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isLoggedIn && user === null) {
-      dispatch(getUser());
-    }
-  }, [dispatch, isLoggedIn, user]);
-
   return (
     <>
-      <ToastContainer />
-      <Header />
-      <AnimatePresence>
-        <Routes location={location} key={location.pathname}>
+      <BrowserRouter>
+        <ToastContainer />
+        <Header />
+        <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/reset" element={<Reset />} />
 
           <Route
             path="/admin/*"
@@ -76,31 +43,18 @@ function App() {
             }
           />
 
-          <Route path="/shop" element={<Product />} />
           <Route path="/product-details/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
-
           <Route path="/checkout-details" element={<CheckoutDetails />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route
-            path="/checkout-flutterwave"
-            element={<CheckoutFlutterwave />}
-          />
-          <Route path="/checkout-paypal" element={<CheckoutPaypal />} />
-          <Route path="/checkout-wallet" element={<CheckoutWallet />} />
-          <Route path="/wallet" element={<Wallet />} />
-          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />
-
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/order-details/:id" element={<OrderDetails />} />
-
           <Route path="/review-product/:id" element={<ReviewProducts />} />
-
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </AnimatePresence>
-      <Footer />
+        <Footer />
+      </BrowserRouter>
     </>
   );
 }

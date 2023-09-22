@@ -1,26 +1,13 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
-import { store } from "./redux/store";
 import { Provider } from "react-redux";
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  useLocation,
-} from "react-router-dom";
+import store from "./Redux/store";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <Router>
-        <Routes>
-          {/* Bcos of framer motion */}
-          <Route path="/*" element={<App />} />
-        </Routes>
-      </Router>
-    </Provider>
-  </React.StrictMode>
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById("root")
 );
