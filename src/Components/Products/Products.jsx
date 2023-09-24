@@ -20,23 +20,7 @@ const Products = () => {
   console.log(products);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   dispatch(
-  //     STORE_PRODUCTS({
-  //       allProducts,
-  //     })
-  //   );
-  // }, [allProducts, dispatch]);
-  // useEffect(() => {
-  //   dispatch(
-  //     GET_PRICE_RANGE({
-  //       allProducts,
-  //     })
-  //   );
-  // }, [allProducts, dispatch]);
-  // const toggleFilter = () => {
-  //   setShowFilter(!showFilter);
-  // };
+  
   return (
     <section>
       <div className={`container ${styles.product}`}>
@@ -49,14 +33,14 @@ const Products = () => {
         </aside>
         <div className={styles.content}>
           <ProductList products={allProducts} />
-          {/* <div className={styles.icon} onClick={toggleFilter}> */}
+          <div className={styles.icon} >
             <FaCogs size={20} color="orangered" />
             <p>
               <b>{showFilter ? "Hide Filter" : "Show Filter"}</b>
             </p>
           </div>
         </div>
-      {/* </div> */}
+      </div>
     </section>
   );
 };

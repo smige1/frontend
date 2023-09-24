@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../Components/Loader/Loader";
 import useFetchCollection from "../../CustomHooks/useFetchCollection";
-import { selectUserID } from "../../Redux/Features/authSlice";
+import { selectUserID } from "../../Redux/Features/auth/authSlice";
 import { selectOrderHistory, STORE_ORDERS } from "../../Redux/Features/OrderSlice";
 import styles from "./OrderHistory.module.scss";
 

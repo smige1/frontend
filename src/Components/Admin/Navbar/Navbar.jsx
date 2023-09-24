@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-import { selectUserName } from "../../../Redux/Features/authSlice";
+import { selectUserName } from "../../../Redux/Features/auth/authSlice";
 import styles from "./Navbar.module.scss";
 import { FaUserCircle } from "react-icons/fa";
 

@@ -51,7 +51,7 @@ const ProductList = ({ products }) => {
           <FaListAlt size={24} color="#0066d4" onClick={() => setGrid(false)} />
 
           <p>
-            {/* <b>{filteredProducts.length}</b> Products found. */}
+             Products found. 
           </p>
         </div>
         {/* Search Icon */}
@@ -71,19 +71,7 @@ const ProductList = ({ products }) => {
       </div>
 
       <div className={grid ? `${styles.grid}` : `${styles.list}`}>
-        {/* {products.length === 0 ? (
-          <p>No products found.</p>
-        ) : (
-          <>
-            {currentProducts.map((product) => {
-              return (
-                <div key={product.id}>
-                  <ProductItem {...product} grid={grid} product={product} />
-                </div>
-              );
-            })}
-          </>
-        )} */}
+        
       </div>
       <Pagination
         currentPage={currentPage}

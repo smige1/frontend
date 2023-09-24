@@ -4,20 +4,17 @@ import styles from "./Header.module.scss";
 import { FaShoppingCart, FaTimes, FaUserCircle } from "react-icons/fa";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { auth } from "../../Firebase/config";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  REMOVE_ACTIVE_USER,
-  SET_ACTIVE_USER,
-} from "../../Redux/Features/authSlice";
 import ShowOnLogin, { ShowOnLogout } from "../ShowHideLinks/ShowHideLinks";
 import { AdminOnlyLink } from "../AdminOnlyRoute/AdminOnlyRoute";
 import {
   CALCULATE_TOTAL_QUANTITY,
   selectCartTotalQuantity,
 } from "../../Redux/Features/cartslice";
+import { UserName } from "../../Pages/Profile/Profile";
 
 const logo = (
   <div className={styles.logo}>
@@ -33,7 +30,6 @@ const activeLink = ({ isActive }) => (isActive ? `${styles.active}` : "");
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const [displayName, setdisplayName] = useState("");
   const [scrollPage, setScrollPage] = useState(false);
   const cartTotalQuantity = useSelector(selectCartTotalQuantity);
 
@@ -54,33 +50,6 @@ const Header = () => {
   };
   window.addEventListener("scroll", fixNavbar);
 
-  // Monitor currently sign in user
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // console.log(user);
-        if (user.displayName == null) {
-          const u1 = user.email.slice(0, -10);
-          const uName = u1.charAt(0).toUpperCase() + u1.slice(1);
-          setdisplayName(uName);
-        } else {
-          setdisplayName(user.displayName);
-        }
-
-        dispatch(
-          SET_ACTIVE_USER({
-            email: user.email,
-            userName: user.displayName ? user.displayName : displayName,
-            userID: user.uid,
-          })
-        );
-      } else {
-        setdisplayName("");
-        dispatch(REMOVE_ACTIVE_USER());
-      }
-    });
-  }, [dispatch, displayName]);
-
   const toggleMenu = () => {
     setShowMenu(!showMenu);
   };
@@ -93,7 +62,7 @@ const Header = () => {
     signOut(auth)
       .then(() => {
         toast.success("Logout successfully.");
-        navigate("/");
+        navigate("/login");
       })
       .catch((error) => {
         toast.error(error.message);
@@ -160,11 +129,16 @@ const Header = () => {
                     Login
                   </NavLink>
                 </ShowOnLogout>
+                <ShowOnLogout>
+                  <NavLink to="/register" className={activeLink}>
+                    Register
+                  </NavLink>
+                </ShowOnLogout>
                 <ShowOnLogin>
-                  <a href="#home" style={{ color: "#ff7722" }}>
-                    <FaUserCircle size={16} />
-                    Hi, {displayName}
-                  </a>
+                  <NavLink to="/profile" className={activeLink}>
+                    <FaUserCircle size={16} style={{ color: "#ff7722" }} />
+                    <UserName />
+                  </NavLink>
                 </ShowOnLogin>
                 <ShowOnLogin>
                   <NavLink to="/order-history" className={activeLink}>

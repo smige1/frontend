@@ -1,71 +1,105 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Auth.module.scss";
 import registerImg from "../../assets/Images/register.png";
 import Card from "../../Components/Card/Card";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../Firebase/config";
-import Loader from "../../Components/Loader/Loader";
 import { toast } from "react-toastify";
+import { validateEmail } from "../../utils";
+import { useDispatch, useSelector } from "react-redux";
+import { register, reset_auth } from "../../Redux/Features/auth/authSlice";
+import Loader from "../../Components/Loader/Loader"
+
+const initialState = {
+  name: "",
+  email: "",
+  password: "",
+  cPassword: "",
+}
 
 const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [cPassword, setCPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState(initialState);
+  const {name, email, password, cPassword} = formData;
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {isLoading, isLoggedIn, isSuccess} = useSelector((state) => state.auth)
 
-  const registerUser = (e) => {
-    e.preventDefault();
-    if (password !== cPassword) {
-      toast.error("Passwords do not match.");
+  
+  const handleInputChange = (e) => {
+    const {name, value} = e.target;
+    setFormData({...formData, [name] : value});
     }
-    setIsLoading(true);
 
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
-        setIsLoading(false);
-        toast.success("Registration Successful...");
-        navigate("/login");
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        setIsLoading(false);
-      });
-  };
+   const registerUser  = async (e) => {
+    e.preventDefault();
+    if (!email || !password){
+      return toast.error("All fields are required")
+    }
+    if (password.length < 6) {
+      return toast.error("Password must be up to 6")
+    }
+    if (!validateEmail(email)) {
+      return toast.error("Please enter a valid email")
+    }
+    if (password !== cPassword) {
+      return toast.error("Passwords do not match")
+    }
 
+    const userData = {
+      name,
+      email,
+      password
+    }
+    await dispatch(register(userData))
+   };
+
+   useEffect(() => {
+    if(isSuccess && isLoggedIn) {
+      navigate("/")
+    }
+    dispatch(reset_auth())
+   }, [isLoading, isLoggedIn, isSuccess, dispatch, navigate])
+  
   return (
     <>
-      {isLoading && <Loader />}
+    {isLoading && <Loader />}
       <section className={`container ${styles.auth}`}>
         <Card>
           <div className={styles.form}>
             <h2>Register</h2>
 
             <form onSubmit={registerUser}>
+            <input
+                type="text"
+                placeholder="Name"
+                required
+                name="name"
+                value={name}
+                onChange={handleInputChange}
+              />
               <input
                 type="text"
                 placeholder="Email"
                 required
+                name="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleInputChange}
               />
               <input
                 type="password"
                 placeholder="Password"
                 required
+                name="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleInputChange}
               />
               <input
                 type="password"
                 placeholder="Confirm Password"
                 required
+                name="cPassword"
                 value={cPassword}
-                onChange={(e) => setCPassword(e.target.value)}
+                onChange={handleInputChange}
               />
               <button type="submit" className="--btn --btn-primary --btn-block">
                 Register

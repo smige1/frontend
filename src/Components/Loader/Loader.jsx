@@ -13,4 +13,10 @@ const Loader = () => {
   );
 };
 
+export const Spinner = () => {
+  <div className="--center-all">
+     <img src={loaderImg} alt="Loading..." />
+  </div>
+}
+
 export default Loader;

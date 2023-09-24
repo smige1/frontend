@@ -1,53 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Auth.module.scss";
 import loginImg from "../../assets/Images/login.png";
 import { Link, useNavigate } from "react-router-dom";
 import { FaGoogle } from "react-icons/fa";
 import Card from "../../Components/Card/Card";
+import { login, reset_auth } from "../../Redux/Features/auth/authSlice";
+import { toast } from "react-toastify";
+import Loader from "../../Components/Loader/Loader";
+import { useDispatch, useSelector } from "react-redux";
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
 import { auth } from "../../Firebase/config";
-import { toast } from "react-toastify";
-import Loader from "../../Components/Loader/Loader";
-import { useSelector } from "react-redux";
 import { selectPreviousURL } from "../../Redux/Features/cartslice";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  const previousURL = useSelector(selectPreviousURL);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {isLoading, isLoggedIn, isSuccess} = useSelector((state) => state.auth)
 
-  const redirectUser = () => {
-    if (previousURL.includes("cart")) {
-      return navigate("/cart");
-    }
-    navigate("/");
-  };
+  
+  
 
-  const loginUser = (e) => {
+   const loginUser  = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (!email || !password){
+      return toast.error("All fields are required")
+    }
+    
+    if (password.length < 6) {
+      return toast.error("Password must be up to 6")
+    }
+   
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // const user = userCredential.user;
-        setIsLoading(false);
-        toast.success("Login Successful...");
-        redirectUser();
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.message);
-      });
-  };
+    const userData = {
+      email,
+      password,
+    }
+    await dispatch(login(userData))
+   };
 
-  // Login with Goooglr
+   useEffect(() => {
+    if(isSuccess && isLoggedIn) {
+      navigate("/")
+    }
+    dispatch(reset_auth())
+   }, [isLoading, isLoggedIn, isSuccess, dispatch, navigate])
+
+    // Login with Goooglr
   const provider = new GoogleAuthProvider();
   const signInWithGoogle = () => {
     signInWithPopup(auth, provider)
@@ -61,6 +66,13 @@ const Login = () => {
       });
   };
 
+  const redirectUser = () => {
+    if (selectPreviousURL.includes("cart")) {
+      return navigate("/cart");
+    }
+    navigate("/");
+  };
+  
   return (
     <>
       {isLoading && <Loader />}
@@ -78,6 +90,7 @@ const Login = () => {
                 type="text"
                 placeholder="Email"
                 required
+                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -85,6 +98,7 @@ const Login = () => {
                 type="password"
                 placeholder="Password"
                 required
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />

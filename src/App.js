@@ -20,8 +20,20 @@ import OrderHistory from "./Pages/OrderHistory/OrderHistory";
 import OrderDetails from "./Pages/Orderdetails/OrderDetails";
 import ReviewProducts from "./Components/ReviewProduct/ReviewProduct";
 import NotFound from "./Pages/NotFound/NotFound";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { getLoginStatus } from "./Redux/Features/auth/authSlice";
+import { useEffect } from "react";
+import Profile from "./Pages/Profile/Profile";
 
 function App() {
+  axios.defaults.withCredentials = true;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+   dispatch(getLoginStatus())
+  }, [dispatch])
+  
   return (
     <>
       <BrowserRouter>
@@ -33,6 +45,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<Reset />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route
             path="/admin/*"

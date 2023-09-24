@@ -10,7 +10,7 @@ import CheckoutSummary from "../CheckoutSummary/CheckoutSummary";
 import spinnerImg from "../../assets/Images/spinner.jpg";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import { selectEmail, selectUserID } from "../../Redux/Features/authSlice";
+import { selectEmail, selectUserID } from "../../Redux/Features/auth/authSlice";
 import {
   CLEAR_CART,
   selectCartItems,
